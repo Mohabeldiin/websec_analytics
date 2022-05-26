@@ -26,10 +26,10 @@ except (ImportError, ModuleNotFoundError) as e:
 
 class Locators:
     """Defines the locator for the web elements."""
-    IMMUNIWEB = "https://www.immuniweb.com/websec/"
+    _IMMUNIWEB = "https://www.immuniweb.com/websec/"
 
 
-class WebSec:
+class WebSec(Locators):
     """WebSite Security Assessment Tool"""
 
     def __init__(self,  url) -> None:
@@ -37,7 +37,7 @@ class WebSec:
         self.__logger = self.__setup_loger()
         url = self.__validate_url(self.__logger, url)
         self.__driver = self.__setup_selenium_driver(self.__logger)
-        self.locators = Locators()
+        self.__open_immuniweb(self.__logger, self.__driver, self._IMMUNIWEB)
 
     def __del__(self) -> None:
         """Tears down the driver"""
@@ -128,6 +128,34 @@ class WebSec:
             logger.critical("Invalid url: %s", url)
             raise Exception("Invalid url")
         return url
+
+    @staticmethod
+    def __open_immuniweb(logger, driver, url):
+        """Opens the immuniweb page
+
+        Args:
+            logger (logging.Logger): logger
+            driver (webdriver.Chrome): driver
+            url (str): url to open
+
+        Raises:
+            TimeoutException: if timeout
+            WebDriverException: if chrome driver not found
+            Exception: if any other exception"""
+        try:
+            driver.get(url)
+        except selenium_exceptions.TimeoutException as ex:
+            logger.critical("TimeoutException: %s", ex.__doc__)
+            raise (f"TimeoutException: {ex.__doc__}") from ex
+        except selenium_exceptions.WebDriverException as ex:
+            logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
+            raise (f"Unable to open SE Ranking: {ex.__doc__}") from ex
+        except Exception as ex:
+            logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
+            raise (f"Unable to open SE Ranking: {ex.__doc__}") from ex
+        else:
+            driver.maximize_window()
+            driver.implicitly_wait(5)
 
 
 if __name__ == "__main__":
