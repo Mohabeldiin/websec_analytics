@@ -228,6 +228,22 @@ class WebSec(Locators):
             logger.critical("Exception: %s", ex.__doc__)
             raise (f"Exception: {ex.__doc__}") from ex
 
+    @staticmethod
+    def __click_button(logger, button):
+        """Clicks a button
+
+        Args:
+            logger (logging.Logger): logger
+            button (WebElement): button
+
+        Raises:
+            Exception: if any exception"""
+        try:
+            button.click()
+        except Exception as ex:
+            logger.critical("Exception: %s", ex.__doc__)
+            raise (f"Exception: {ex.__doc__}") from ex
+
     def __start_scan(self, url: str):
         """Starts the scan
             Args:
