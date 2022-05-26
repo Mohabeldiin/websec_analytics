@@ -158,5 +158,16 @@ class WebSec(Locators):
             driver.implicitly_wait(5)
 
 
+    def __start_scan(self, url: str):
+        """Starts the scan
+            Args:
+                url (str): url to scan
+            Returns:
+                dict: scan results
+            Raises:
+                Exception: if any exception"""
+        self.__logger.info("Starting scan for url: %s", url)
+
+
 if __name__ == "__main__":
     pass
