@@ -40,6 +40,7 @@ class WebSec(Locators):
         self.__url = self.__validate_url(self.__logger, url)
         self.__driver = self.__setup_selenium_driver(self.__logger)
         self.__open_immuniweb(self.__logger, self.__driver, self._IMMUNIWEB)
+        self.__start_scan(self.__url)
 
     def __del__(self) -> None:
         """Tears down the driver"""
@@ -256,6 +257,10 @@ class WebSec(Locators):
             Raises:
                 Exception: if any exception"""
         self.__logger.info("Starting scan for url: %s", url)
+        text_field = self.__define_text_field(self.__logger, self.__driver, self._URL_TEXTFIELD)
+        self.__send_text(self.__logger, text_field, self.__url)
+        button = self.__define_button(self.__logger, self.__driver, self._URL_BUTTON)
+        self.__click_button(self.__logger, button)
 
 
 if __name__ == "__main__":
