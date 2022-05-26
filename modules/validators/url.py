@@ -5,8 +5,8 @@ import re
 
 from .utils import validator
 
-ip_middle_octet = r"(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5]))"
-ip_last_octet = r"(?:\.(?:0|[1-9]\d?|1\d\d|2[0-4]\d|25[0-5]))"
+ip_middle_octet = r"(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5]))"  # pylint: disable=invalid-name
+ip_last_octet = r"(?:\.(?:0|[1-9]\d?|1\d\d|2[0-4]\d|25[0-5]))"  # pylint: disable=invalid-name
 
 regex = re.compile(  # noqa: W605
     r"^"
