@@ -24,7 +24,7 @@ except (ImportError, ModuleNotFoundError) as e:
     raise (f"Module selenium not found: {e.__doc__}") from e
 
 
-class Locators(object):
+class Locators:
     """Defines the locator for the web elements."""
     IMMUNIWEB = "https://www.immuniweb.com/websec/"
 
@@ -37,6 +37,7 @@ class WebSec:
         self.__logger = self.__setup_loger()
         url = self.__validate_url(self.__logger, url)
         self.__driver = self.__setup_selenium_driver(self.__logger)
+        self.locators = Locators()
 
     def __del__(self) -> None:
         """Tears down the driver"""
