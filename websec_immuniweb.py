@@ -59,7 +59,7 @@ class WebSec:
     def __setup_loger():
         """setup the logger
             Log Example:
-                2022-05-24 00:45:56,230 - Seo - INFO: Message
+                2022-05-24 00:45:56,230 - WebSec - DEBUG: Message
             Returns:
                 logging.Logger: logger"""
         logging.basicConfig(
@@ -68,7 +68,7 @@ class WebSec:
             level=logging.DEBUG,
             filename='logs/seo_se_ranking.log',
             filemode="w")
-        return logging.getLogger("Seo")
+        return logging.getLogger("WebSec")
 
     @staticmethod
     def __setup_selenium_driver(logger) -> webdriver.Chrome:
