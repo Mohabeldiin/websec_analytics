@@ -98,6 +98,7 @@ class WebSec(Locators):
                 logger.critical("Exception: %s", ex.__doc__)
                 raise (f"Exception: {ex.__doc__}") from ex
             else:
+                driver.maximize_window()
                 driver.implicitly_wait(5)
                 logger.debug("Returning driver: %s", driver)
         return driver
@@ -157,7 +158,6 @@ class WebSec(Locators):
             logger.critical("Unable to open SE Ranking: %s", ex.__doc__)
             raise (f"Unable to open SE Ranking: {ex.__doc__}") from ex
         else:
-            driver.maximize_window()
             driver.implicitly_wait(5)
 
     @staticmethod
