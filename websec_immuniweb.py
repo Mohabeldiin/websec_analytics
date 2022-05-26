@@ -27,6 +27,8 @@ except (ImportError, ModuleNotFoundError) as e:
 class Locators:
     """Defines the locator for the web elements."""
     _IMMUNIWEB = "https://www.immuniweb.com/websec/"
+    _URL_TEXTFIELD = (By.CLASS_NAME, 'parent-blue-color input-lg')
+    _URL_BUTTON = (By.CLASS_NAME, 'parent-border-left-color btn btn-info btn-lg httpsearch-searchbutton') # pylint: disable=line-too-long
 
 
 class WebSec(Locators):
@@ -35,7 +37,7 @@ class WebSec(Locators):
     def __init__(self,  url) -> None:
         """Initializes the class"""
         self.__logger = self.__setup_loger()
-        url = self.__validate_url(self.__logger, url)
+        self.__url = self.__validate_url(self.__logger, url)
         self.__driver = self.__setup_selenium_driver(self.__logger)
         self.__open_immuniweb(self.__logger, self.__driver, self._IMMUNIWEB)
 
