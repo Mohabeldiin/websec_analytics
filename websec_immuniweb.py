@@ -32,6 +32,27 @@ class Locators(object):
 class WebSec:
     """foo"""
 
+    def __init__(self,  url) -> None:
+        """foo"""
+
+    def __del__(self) -> None:
+        """foo"""
+
+    @staticmethod
+    def __setup_loger():
+        """setup the logger
+            Log Example:
+                2022-05-24 00:45:56,230 - Seo - INFO: Message
+            Returns:
+                logging.Logger: logger"""
+        logging.basicConfig(
+            format='%(asctime)s - %(name)s - %(levelname)s: %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+            level=logging.DEBUG,
+            filename='logs/seo_se_ranking.log',
+            filemode="w")
+        return logging.getLogger("Seo")
+
 
 if __name__ == "__main__":
     pass
