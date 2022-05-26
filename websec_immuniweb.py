@@ -30,13 +30,29 @@ class Locators(object):
 
 
 class WebSec:
-    """foo"""
+    """WebSite Security Assessment Tool"""
 
     def __init__(self,  url) -> None:
-        """foo"""
+        """Initializes the class"""
+        self.__logger = self.__setup_loger()
+        url = self.__validate_url(self.__logger, url)
+        self.__driver = self.__setup_selenium_driver(self.__logger)
 
     def __del__(self) -> None:
-        """foo"""
+        """Tears down the driver"""
+        self.__logger.debug("Tearing down driver")
+        try:
+            self.__driver.quit()
+        except selenium_exceptions.WebDriverException as ex:
+            self.__logger.critical("Unable to quit driver: %s", ex.__doc__)
+            raise (f"Unable to quit driver: {ex.__doc__}") from ex
+        except Exception as ex:
+            self.__logger.critical("Unable to quit driver: %s", ex.__doc__)
+            raise (f"Unable to quit driver: {ex.__doc__}") from ex
+        else:
+            del self.__driver
+            self.__logger.debug("Tear Down Successfully.")
+            del self.__logger
 
     @staticmethod
     def __setup_loger():
@@ -52,6 +68,65 @@ class WebSec:
             filename='logs/seo_se_ranking.log',
             filemode="w")
         return logging.getLogger("Seo")
+
+    @staticmethod
+    def __setup_selenium_driver(logger) -> webdriver.Chrome:
+        """Sets up the selenium driver
+            Returns:
+                webdriver.Chrome: selenium driver
+            Raises:
+                WebDriverException: if unable to open selenium driver
+                Exception: if unable to open selenium driver"""
+        logger.debug("Setting up selenium")
+        options = webdriver.ChromeOptions()
+        options.headless = True
+        try:
+            driver = webdriver.Chrome(
+                executable_path="C:\\Program Files (x86)\\chromedriver.exe", options=options)
+        except selenium_exceptions.WebDriverException:
+            try:
+                driver = webdriver.Chrome(
+                    executable_path="C:\\chromedriver.exe", options=options)
+            except selenium_exceptions.WebDriverException as ex:
+                logger.critical("Chrome driver not found: %s", ex.__doc__)
+                raise (f"Chrome driver not found: {ex.__doc__}") from ex
+            except Exception as ex:
+                logger.critical("Exception: %s", ex.__doc__)
+                raise (f"Exception: {ex.__doc__}") from ex
+            else:
+                driver.implicitly_wait(5)
+                logger.debug("Returning driver: %s", driver)
+        return driver
+
+    @staticmethod
+    def __validate_url(logger, url: str) -> str:
+        """validate the url
+            by removing the http:// or https:// or www.
+            Args:
+            url (str): url to validate
+            Returns:
+                str: url without http:// or https:// or www.
+            Raises:
+                Exception: if url is not string"""
+        if url_validator(url):
+            logger.info("Valid url: %s", url)
+            if url.startswith("http://www."):
+                url = url[11:]
+            elif url.startswith("http://"):
+                url = url[7:]
+            elif url.startswith("https://www."):
+                url = url[12:]
+            elif url.startswith("https://"):
+                url = url[8:]
+            elif url.startswith("www."):
+                url = url[4:]
+            if url.endswith("/"):
+                url = url[:-1]
+            logger.debug("Returning url: %s", url)
+        else:
+            logger.critical("Invalid url: %s", url)
+            raise Exception("Invalid url")
+        return url
 
 
 if __name__ == "__main__":
