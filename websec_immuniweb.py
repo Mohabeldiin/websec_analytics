@@ -211,6 +211,23 @@ class WebSec(Locators):
             logger.debug("Returning button: %s", button)
         return button
 
+    @staticmethod
+    def __send_text(logger, text_field, text):
+        """Sends text to a text field
+
+        Args:
+            logger (logging.Logger): logger
+            text_field (WebElement): text field
+            text (str): text to send
+
+        Raises:
+            Exception: if any exception"""
+        try:
+            text_field.send_keys(text)
+        except Exception as ex:
+            logger.critical("Exception: %s", ex.__doc__)
+            raise (f"Exception: {ex.__doc__}") from ex
+
     def __start_scan(self, url: str):
         """Starts the scan
             Args:
