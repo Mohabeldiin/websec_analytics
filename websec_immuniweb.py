@@ -223,6 +223,7 @@ class WebSec(Locators):
         Raises:
             Exception: if any exception"""
         try:
+            text_field.clear()
             text_field.send_keys(text)
         except Exception as ex:
             logger.critical("Exception: %s", ex.__doc__)
