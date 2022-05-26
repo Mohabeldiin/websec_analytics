@@ -180,6 +180,9 @@ class WebSec(Locators):
         except selenium_exceptions.NoSuchElementException as ex:
             logger.critical("NoSuchElementException: %s", ex.__doc__)
             raise (f"NoSuchElementException: {ex.__doc__}") from ex
+        except selenium_exceptions.TimeoutException as ex:
+            logger.critical("TimeoutException: %s", ex.__doc__)
+            raise (f"TimeoutException: {ex.__doc__}") from ex
         except Exception as ex:
             logger.critical("Exception: %s", ex.__doc__)
             raise (f"Exception: {ex.__doc__}") from ex
