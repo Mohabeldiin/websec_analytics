@@ -6,6 +6,7 @@
 
 
 import logging
+import time
 
 try:
     from modules.validators import url as url_validator
@@ -27,8 +28,11 @@ except (ImportError, ModuleNotFoundError) as e:
 class Locators:
     """Defines the locator for the web elements."""
     _IMMUNIWEB = "https://www.immuniweb.com/websec/"
-    _URL_TEXTFIELD = (By.CLASS_NAME, 'parent-blue-color input-lg')
-    _URL_BUTTON = (By.CLASS_NAME, 'parent-border-left-color btn btn-info btn-lg httpsearch-searchbutton') # pylint: disable=line-too-long
+    _URL_TEXTFIELD = (By.XPATH, '//*[@id="httpsearch-url"]')
+    _URL_BUTTON = (By.XPATH, '//*[@id="search-input"]/div/span/button')
+    _MULTI_IP_FORM = (By.XPATH, '/html/body/div[5]')
+    _MULTI_IP_YES_BUTTON = (By.XPATH, '/html/body/div[5]/div[7]/button[1]')
+    _SCAN_PROGREC_FORM = (By.XPATH, '/html/body/section/div')
 
 
 class WebSec(Locators):
@@ -83,7 +87,7 @@ class WebSec(Locators):
                 Exception: if unable to open selenium driver"""
         logger.debug("Setting up selenium")
         options = webdriver.ChromeOptions()
-        options.headless = True
+        options.headless = False
         try:
             driver = webdriver.Chrome(
                 executable_path="C:\\Program Files (x86)\\chromedriver.exe", options=options)
@@ -251,6 +255,51 @@ class WebSec(Locators):
             logger.critical("Exception: %s", ex.__doc__)
             raise (f"Exception: {ex.__doc__}") from ex
 
+    def __is_multi_ip(self) -> bool:
+        """Checks if the Site is Multi-IP"""
+        try:
+            self.__logger.debug("Checking if Site have Multi IP")
+            WebDriverWait(self.__driver, 10).until(
+                EC.visibility_of_element_located(self._MULTI_IP_FORM))
+            self.__logger.debug("Site have Multi IP")
+            status = True
+        except selenium_exceptions.TimeoutException:
+            self.__logger.debug("Site don't have Multi IP")
+            status = False
+        return status
+
+    def __handel_multi_ip(self):
+        """Handles Multi IP"""
+        if self.__is_multi_ip():
+            self.__logger.debug("Handling Multi IP")
+            button = self.__define_button(self.__logger, self.__driver,
+                                self._MULTI_IP_YES_BUTTON)
+            self.__click_button(self.__logger, button)
+        else:
+            self.__logger.debug("Site don't have Multi IP")
+
+    def __is_scanning(self) -> bool:
+        """foo"""
+        try:
+            self.__logger.debug("Checking if Site is Scanning")
+            WebDriverWait(self.__driver, 10).until(
+                EC.visibility_of_element_located(self._SCAN_PROGREC_FORM))
+            self.__logger.debug("Still Scanning")
+            status = True
+        except selenium_exceptions.TimeoutException:
+            self.__logger.debug("Fineshed Scanning")
+            status = False
+        return status
+
+    def __handel_scanning(self):
+        """Handles Scanning"""
+        if self.__is_scanning():
+            self.__logger.debug("Handling Scanning")
+            time.sleep(10)
+            self.__handel_scanning()
+        else:
+            self.__logger.debug("Scanning handled")
+
     def __start_scan(self, url: str):
         """Starts the scan
             Args:
@@ -264,7 +313,9 @@ class WebSec(Locators):
         self.__send_text(self.__logger, text_field, self.__url)
         button = self.__define_button(self.__logger, self.__driver, self._URL_BUTTON)
         self.__click_button(self.__logger, button)
+        self.__handel_multi_ip()
+        self.__handel_scanning()
 
 
 if __name__ == "__main__":
-    pass
+    websec = WebSec("https://www.goodreads.com/")
