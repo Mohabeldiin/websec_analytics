@@ -157,6 +157,32 @@ class WebSec(Locators):
             driver.maximize_window()
             driver.implicitly_wait(5)
 
+    @staticmethod
+    def __define_text_field(logger, driver, locator):
+        """Defines the text field
+
+        Args:
+            logger (logging.Logger): logger
+            driver (webdriver.Chrome): driver
+            locator (tuple): locator
+
+        Returns:
+            WebElement: text field
+        Raises:
+            NoSuchElementException: if text field not found
+            Exception: if any other exception"""
+        try:
+            text_field = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located(locator))
+        except selenium_exceptions.NoSuchElementException as ex:
+            logger.critical("NoSuchElementException: %s", ex.__doc__)
+            raise (f"NoSuchElementException: {ex.__doc__}") from ex
+        except Exception as ex:
+            logger.critical("Exception: %s", ex.__doc__)
+            raise (f"Exception: {ex.__doc__}") from ex
+        else:
+            logger.debug("Returning text field: %s", text_field)
+        return text_field
 
     def __start_scan(self, url: str):
         """Starts the scan
