@@ -184,6 +184,33 @@ class WebSec(Locators):
             logger.debug("Returning text field: %s", text_field)
         return text_field
 
+    @staticmethod
+    def __define_button(logger, driver, locator):
+        """Defines the button
+
+        Args:
+            logger (logging.Logger): logger
+            driver (webdriver.Chrome): driver
+            locator (tuple): locator
+
+        Returns:
+            WebElement: button
+        Raises:
+            NoSuchElementException: if button not found
+            Exception: if any other exception"""
+        try:
+            button = WebDriverWait(driver, 10).until(
+                EC.element_to_be_clickable(locator))
+        except selenium_exceptions.NoSuchElementException as ex:
+            logger.critical("NoSuchElementException: %s", ex.__doc__)
+            raise (f"NoSuchElementException: {ex.__doc__}") from ex
+        except Exception as ex:
+            logger.critical("Exception: %s", ex.__doc__)
+            raise (f"Exception: {ex.__doc__}") from ex
+        else:
+            logger.debug("Returning button: %s", button)
+        return button
+
     def __start_scan(self, url: str):
         """Starts the scan
             Args:
