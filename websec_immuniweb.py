@@ -35,9 +35,12 @@ class Locators:
     _SCAN_PROGREC_FORM = (By.XPATH, '/html/body/section/div')
     _SCAN_FINAL_SCORE = (By.XPATH, '//*[@id="mark"]/h5')
     _SCAN_SERVER_IP = (By.XPATH, '//*[@id="server_ip"]')
-    _WEB_SOFTWARE_FOUND = (By.XPATH, '//*[@id="appscan-stat"]/div/div[1]/div[2]')
-    _WEB_SOFTWARE_OUTDATED = (By.XPATH, '//*[@id="appscan-stat"]/div/div[2]/div[2]')
-    _WEB_SOFTWARE_VULNERABIL = (By.XPATH, '//*[@id="appscan-stat"]/div/div[3]/div[2]')
+    _WEB_SOFTWARE_FOUND = (
+        By.XPATH, '//*[@id="appscan-stat"]/div/div[1]/div[2]')
+    _WEB_SOFTWARE_OUTDATED = (
+        By.XPATH, '//*[@id="appscan-stat"]/div/div[2]/div[2]')
+    _WEB_SOFTWARE_VULNERABIL = (
+        By.XPATH, '//*[@id="appscan-stat"]/div/div[3]/div[2]')
 
 
 class WebSec(Locators):
@@ -278,7 +281,7 @@ class WebSec(Locators):
         if self.__is_multi_ip():
             self.__logger.debug("Handling Multi IP")
             button = self.__define_button(self.__logger, self.__driver,
-                                self._MULTI_IP_YES_BUTTON)
+                                          self._MULTI_IP_YES_BUTTON)
             self.__click_button(self.__logger, button)
         else:
             self.__logger.debug("Site don't have Multi IP")
@@ -300,7 +303,7 @@ class WebSec(Locators):
         """Handles Scanning"""
         if self.__is_scanning():
             self.__logger.debug("Handling Scanning")
-            time.sleep(10)
+            time.sleep(30)
             self.__handel_scanning()
         else:
             self.__logger.debug("Scanning handled")
@@ -314,9 +317,11 @@ class WebSec(Locators):
             Raises:
                 Exception: if any exception"""
         self.__logger.info("Starting scan for url: %s", url)
-        text_field = self.__define_text_field(self.__logger, self.__driver, self._URL_TEXTFIELD)
+        text_field = self.__define_text_field(
+            self.__logger, self.__driver, self._URL_TEXTFIELD)
         self.__send_text(self.__logger, text_field, self.__url)
-        button = self.__define_button(self.__logger, self.__driver, self._URL_BUTTON)
+        button = self.__define_button(
+            self.__logger, self.__driver, self._URL_BUTTON)
         self.__click_button(self.__logger, button)
         self.__handel_multi_ip()
         self.__handel_scanning()
@@ -328,9 +333,29 @@ class WebSec(Locators):
             Raises:
                 Exception: if any exception"""
         self.__logger.info("Getting scan results")
-        results = {}
+        final_score = self.__handel_get_result(self._SCAN_FINAL_SCORE)
+        server_ip = self.__handel_get_result(self._SCAN_SERVER_IP)
+        software_found = self.__handel_get_result(self._WEB_SOFTWARE_FOUND)
+        software_outdated = self.__handel_get_result(
+            self._WEB_SOFTWARE_OUTDATED)
+        software_vulnerabil = self.__handel_get_result(
+            self._WEB_SOFTWARE_VULNERABIL)
+        for component in range(1, 3):
+            pass
+        result = {
+            "final_score": final_score,
+            "server_ip": server_ip,
+            "software_found": software_found,
+            "software_outdated": software_outdated,
+            "software_vulnerabil": software_vulnerabil
+        }
+        self.__logger.debug("Returning scan results: %s", result)
+        return result
 
-    def __handel__get__result(self, loctor):
+    def __call__(self,):
+        return self.__get_scan_results()
+
+    def __handel_get_result(self, loctor):
         """Handles the result"""
         self.__logger.debug("Handling result")
         try:
@@ -345,6 +370,6 @@ class WebSec(Locators):
         return results
 
 
-
 if __name__ == "__main__":
-    websec = WebSec("https://www.goodreads.com/")
+    websec = WebSec("https://www.modern-academy.edu.eg/")
+    print(websec())
