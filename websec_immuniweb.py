@@ -33,6 +33,11 @@ class Locators:
     _MULTI_IP_FORM = (By.XPATH, '/html/body/div[5]')
     _MULTI_IP_YES_BUTTON = (By.XPATH, '/html/body/div[5]/div[7]/button[1]')
     _SCAN_PROGREC_FORM = (By.XPATH, '/html/body/section/div')
+    _SCAN_FINAL_SCORE = (By.XPATH, '//*[@id="mark"]/h5')
+    _SCAN_SERVER_IP = (By.XPATH, '//*[@id="server_ip"]')
+    _WEB_SOFTWARE_FOUND = (By.XPATH, '//*[@id="appscan-stat"]/div/div[1]/div[2]')
+    _WEB_SOFTWARE_OUTDATED = (By.XPATH, '//*[@id="appscan-stat"]/div/div[2]/div[2]')
+    _WEB_SOFTWARE_VULNERABIL = (By.XPATH, '//*[@id="appscan-stat"]/div/div[3]/div[2]')
 
 
 class WebSec(Locators):
@@ -315,6 +320,16 @@ class WebSec(Locators):
         self.__click_button(self.__logger, button)
         self.__handel_multi_ip()
         self.__handel_scanning()
+
+    def __get_scan_results(self) -> dict:
+        """Gets the scan results
+            Returns:
+                dict: scan results
+            Raises:
+                Exception: if any exception"""
+        self.__logger.info("Getting scan results")
+        results = {}
+
 
 
 if __name__ == "__main__":
