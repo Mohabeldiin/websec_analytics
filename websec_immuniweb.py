@@ -330,6 +330,20 @@ class WebSec(Locators):
         self.__logger.info("Getting scan results")
         results = {}
 
+    def __handel__get__result(self, loctor):
+        """Handles the result"""
+        self.__logger.debug("Handling result")
+        try:
+            elment = WebDriverWait(self.__driver, 10).until(
+                EC.presence_of_element_located(loctor))
+        except selenium_exceptions.TimeoutException:
+            self.__logger.debug("Result not found")
+        else:
+            self.__logger.debug("Result found")
+            results = elment.text
+            self.__logger.debug("Result: %s", results)
+        return results
+
 
 
 if __name__ == "__main__":
