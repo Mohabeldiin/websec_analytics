@@ -136,3 +136,6 @@ dmypy.json
 
 # Log Files
 logs/
+temp_locators.js
+api_response.json
+tempCodeRunnerFile.py
