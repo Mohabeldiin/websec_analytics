@@ -281,7 +281,7 @@ class WebSec(Locators):
         if self.__is_multi_ip():
             self.__logger.debug("Handling Multi IP")
             button = self.__define_button(self.__logger, self.__driver,
-                                          self._MULTI_IP_YES_BUTTON)
+                                            self._MULTI_IP_YES_BUTTON)
             self.__click_button(self.__logger, button)
         else:
             self.__logger.debug("Site don't have Multi IP")
@@ -365,10 +365,10 @@ class WebSec(Locators):
                             (By.XPATH, f'//*[@id="appscan-components-value"]/div[{component}]/div[2]/table/tbody/tr[{vuln}]/td[3]')))
                 except Exception:
                     self.__logger.debug("No such element")
-                    #pass
+                    # pass
                 finally:
                     lib_json_vulnerabil = []
-                    for index in range(0, len(lib_vulnerabil_score)): # pylint: disable = consider-using-enumerate
+                    for index in range(0, len(lib_vulnerabil_score)):  # pylint: disable = consider-using-enumerate
                         if index == len(lib_vulnerabil_score)-1:
                             lib_json_vulnerabil.append({
                                 "score": lib_vulnerabil_score[index],
