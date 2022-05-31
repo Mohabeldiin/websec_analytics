@@ -95,7 +95,7 @@ class WebSec(Locators):
                 Exception: if unable to open selenium driver"""
         logger.debug("Setting up selenium")
         options = webdriver.ChromeOptions()
-        options.headless = False
+        options.headless = True
         try:
             driver = webdriver.Chrome(
                 executable_path="C:\\Program Files (x86)\\chromedriver.exe", options=options)
@@ -340,14 +340,68 @@ class WebSec(Locators):
             self._WEB_SOFTWARE_OUTDATED)
         software_vulnerabil = self.__handel_get_result(
             self._WEB_SOFTWARE_VULNERABIL)
+        lib_json = []
         for component in range(1, 3):
-            pass
+            try:
+                lib_name = self.__handel_get_result(
+                    (By.XPATH, f'//*[@id="appscan-components-value"]/div[{component}]/div[1]/div[1]'))
+                lib_version = self.__handel_get_result(
+                    (By.XPATH, f'//*[@id="appscan-components-value"]/div[{component}]/div[1]/div[2]'))
+                lib_message = self.__handel_get_result(
+                    (By.XPATH, f'//*[@id="appscan-components-value"]/div[{component}]/div[2]/div'))
+            except selenium_exceptions.NoSuchElementException:
+                self.__logger.debug("No such element")
+            finally:
+                try:
+                    lib_vulnerabil_score = []
+                    lib_vulnerabil_cve = []
+                    lib_vulnerabil_type = []
+                    for vuln in range(1, 11):
+                        lib_vulnerabil_score.append(self.__handel_get_result(
+                            (By.XPATH, f'//*[@id="appscan-components-value"]/div[{component}]/div[2]/table/tbody/tr[{vuln}]/td[1]')))
+                        lib_vulnerabil_cve.append(self.__handel_get_result(
+                            (By.XPATH, f'//*[@id="appscan-components-value"]/div[{component}]/div[2]/table/tbody/tr[{vuln}]/td[2]')))
+                        lib_vulnerabil_type.append(self.__handel_get_result(
+                            (By.XPATH, f'//*[@id="appscan-components-value"]/div[{component}]/div[2]/table/tbody/tr[{vuln}]/td[3]')))
+                except Exception:
+                    self.__logger.debug("No such element")
+                    #pass
+                finally:
+                    lib_json_vulnerabil = []
+                    for index in range(0, len(lib_vulnerabil_score)): # pylint: disable = consider-using-enumerate
+                        if index == len(lib_vulnerabil_score)-1:
+                            lib_json_vulnerabil.append({
+                                "score": lib_vulnerabil_score[index],
+                                "cve": lib_vulnerabil_cve[index],
+                                "type": lib_vulnerabil_type[index]
+                            })
+                        else:
+                            lib_json_vulnerabil.append({
+                                "score": lib_vulnerabil_score[index],
+                                "cve": lib_vulnerabil_cve[index],
+                                "type": lib_vulnerabil_type[index]
+                            },)
+            if component == 1:
+                lib_json.append({
+                    "name": lib_name,
+                    "version": lib_version,
+                    "message": lib_message,
+                    "vulnerabil": lib_json_vulnerabil
+                },)
+            elif component == 2:
+                lib_json.append({
+                    "name": lib_name,
+                    "version": lib_version,
+                    "message": lib_message,
+                    "vulnerabil": lib_json_vulnerabil
+                })
         result = {
             "final_score": final_score,
             "server_ip": server_ip,
             "software_found": software_found,
             "software_outdated": software_outdated,
-            "software_vulnerabil": software_vulnerabil
+            "software_vulnerabil": software_vulnerabil,
+            "lib_json": lib_json
         }
         self.__logger.debug("Returning scan results: %s", result)
         return result
